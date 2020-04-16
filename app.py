@@ -19,7 +19,12 @@ def parse_sentence(text: str):
     return split_article_content
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def index():
+    return render_template("index.html")
+
+
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     form = MyForm()
     keywords = form.keyword.data
@@ -47,7 +52,7 @@ def home():
                             print()
                             break
 
-    return render_template("index.html", form=form)
+    return render_template("home.html", form=form)
 
 
 @app.route('/sample/<file_name>.txt')
