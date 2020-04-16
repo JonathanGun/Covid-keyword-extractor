@@ -50,6 +50,19 @@ def home():
     return render_template("index.html", form=form)
 
 
+@app.route('/sample/<file_name>.txt')
+def send_text_file(file_name):
+    """Send your static text file."""
+    file_dot_text = file_name + '.txt'
+    return app.send_static_file(file_dot_text)
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """Custom 404 page."""
+    return render_template('404.html', title="Page Not Found"), 404
+
+
 if __name__ == "__main__":
     app.config['SECRET_KEY'] = 'd4b0321f7bf962215a0dd420459c1044'
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
