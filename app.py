@@ -1,9 +1,11 @@
 import re
+import os
 from flask import Flask, flash, redirect, url_for, render_template
 from forms import MyForm
 from string_matcher import StringMatcher, BoyerMoore, KMP, Regex
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(32)
 
 algorithm_map = {
     "boyer-moore": BoyerMoore(),
@@ -69,5 +71,4 @@ def page_not_found(error):
 
 
 if __name__ == "__main__":
-    app.config['SECRET_KEY'] = 'd4b0321f7bf962215a0dd420459c1044'
     app.run(debug=True, use_reloader=False)
