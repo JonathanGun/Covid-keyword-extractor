@@ -4,17 +4,6 @@ import itertools
 import re
 
 
-class StringMatcher:
-    def __init__(self, strategy):
-        self.strategy = strategy
-
-    def change_strategy(self, strategy):
-        self.strategy = strategy
-
-    def match(self, txt, pat):
-        return self.strategy.match(txt, pat)
-
-
 class MatchStrategy:
     def match(self, txt: str, pat: str) -> int:
         pass
@@ -92,3 +81,14 @@ class Regex(MatchStrategy):
     def match(self, txt, pat):
         matches = list(itertools.islice(re.finditer(pat, txt), 1))
         return matches[0].span()[0] if len(matches) else -1
+
+
+class StringMatcher:
+    def __init__(self, strategy = Regex()):
+        self.strategy = strategy
+
+    def change_strategy(self, strategy):
+        self.strategy = strategy
+
+    def match(self, txt, pat):
+        return self.strategy.match(txt, pat)

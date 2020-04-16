@@ -19,6 +19,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Set Environment Variables
+      uses: JonathanGun/set-env@v1.0.0
+      with:
+        CODECOV_TOKEN = "480eaef2-0d3a-48ee-9c69-5fa2507dbdde"
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
@@ -31,7 +36,7 @@ jobs:
       run: |
         pip install mypy
         mypy src
-    - name: Test with pytest
+    - name: Test with pytest and pytest-cov
       run: |
         pip install pytest
-        pytest
+        pytest --cov=./
