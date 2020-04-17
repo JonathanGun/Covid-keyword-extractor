@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="accordion mb-4">
+    {% for result in results %}
+    <div class="card">
+        <button class="btn btn-dark" data-toggle="collapse" data-target="#collapse-{{ loop.index }}" aria-expanded="true" aria-controls="collapse-{{ loop.index }}">
+            {{ result.filename }}
+        </button>
+        <div id="collapse-{{ loop.index }}" class="collapse show" aria-labelledby="heading-{{ loop.index }}">
+            <div class="card-body">
+                <ul class="list-group">
+                    {{ "No Keyword Matches" if result.matches|length == 0 else "" }}
+                    {% for match in result.matches %}
+                    <li class="list-group-item">
+                        <div>
+                            <p> Keyword: {{ match.keyword }} </p>
+                            <p> Hasil ekstraksi informasi: {{ match.sentence }} </p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

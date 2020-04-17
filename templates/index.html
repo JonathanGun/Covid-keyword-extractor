@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="card">
-  <h5 class="card-header">Getting Started</h5>
-  <div class="card-body">
-    <h5 class="card-title">Covid Information Extractor</h5>
-    <p class="card-text">Not sure where to go? Start here!</p>
-    <a href="/home" class="btn btn-primary">» try now</a>
-  </div>
+    <h5 class="card-header">Getting Started</h5>
+    <div class="card-body">
+        <h5 class="card-title">Covid Information Extractor</h5>
+        <p class="card-text">Not sure where to go? Start here!</p>
+        <a href="{{ url_for('extractor')}}" class="btn btn-primary">» try now</a>
+    </div>
 </div>
 {% endblock content %}
