@@ -31,11 +31,11 @@ jobs:
     - name: Lint with mypy
       run: |
         pip install mypy
-        mypy src
+        mypy ./
     - name: Test with pytest and pytest-cov
       run: |
         pip install pytest
-        pytest --cov=src --cov-branch --cov-report=xml --cov-report term-missing
+        pytest --cov=./ --cov-branch --cov-report=xml --cov-report term-missing
     - name: Upload to codecov
       uses: codecov/codecov-action@v1.0.3
       with:
