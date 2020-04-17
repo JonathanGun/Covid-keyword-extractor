@@ -4,7 +4,6 @@ pytest-cov>=2.8.1
 flask
 flask_wtf
 wtforms
-formencode
 mock
 gevent
 gunicorn
