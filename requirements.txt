@@ -8,3 +8,4 @@ formencode
 mock
 gevent
 gunicorn
+requests
