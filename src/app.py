@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(32)
 
 algorithm_map = {
-    "boyer-moore": BoyerMoore(),
+    "boyer_moore": BoyerMoore(),
     "kmp": KMP(),
     "regex": Regex(),
 }
