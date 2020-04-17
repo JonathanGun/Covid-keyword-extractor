@@ -95,11 +95,6 @@ def extractor():
     return render_template("extractor.html", form=form)
 
 
-@app.route('/result/<results>')
-def result(results):
-    return render_template("result.html", results=results, len=len(results))
-
-
 @app.route('/sample/<file_name>.txt')
 def send_text_file(file_name):
     """Send your static text file."""

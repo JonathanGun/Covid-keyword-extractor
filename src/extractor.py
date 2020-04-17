@@ -8,9 +8,6 @@ class Match:
         self.keyword = keyword
         self.sentence = sentence
 
-    def __repr__(self):
-        return self.keyword + "\n" + self.sentence
-
 
 class Extractor:
     def __init__(self, keywords: List[str], matcher: StringMatcher = StringMatcher()):
@@ -33,10 +30,3 @@ class Extractor:
                     matches.append(Match(keyword, sentence))
                     break
         return matches
-
-    def __repr__(self):
-        string = ""
-        string += "filename: " + self.filename + "\n"
-        string += "kwd: " + ",".join(self.keywords) + "\n"
-        string += "matches:\n" + "\n".join([repr(match) for match in self.matches])
-        return string

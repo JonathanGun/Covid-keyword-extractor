@@ -35,7 +35,7 @@ jobs:
     - name: Test with pytest and pytest-cov
       run: |
         pip install pytest
-        pytest --cov=src --cov-branch --cov-report=xml
+        pytest --cov=src --cov-branch --cov-report=xml --cov-report term-missing
     - name: Upload to codecov
       uses: codecov/codecov-action@v1.0.3
       with:

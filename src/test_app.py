@@ -1,5 +1,3 @@
-"""Tests for the Flask Heroku template."""
-
 import unittest
 from app import app
 
@@ -31,10 +29,10 @@ class TestApp(unittest.TestCase):
         # check result from server with expected data
         self.assertEqual(rv.status_code, 200)
 
-    # def test_about_page_works(self):
-    #     rv = self.app.get('/extractor/')
-    #     self.assertTrue(rv.data)
-    #     self.assertEqual(rv.status_code, 200)
+    def test_extractor_page_works(self):
+        rv = self.app.get('/extractor')
+        self.assertTrue(rv.data)
+        self.assertEqual(rv.status_code, 200)
 
     # def test_default_redirecting(self):
     #     rv = self.app.get('/extractor')
@@ -49,7 +47,3 @@ class TestApp(unittest.TestCase):
         self.assertTrue(rv.data)
         self.assertEqual(rv.status_code, 200)
         rv.close()
-
-
-if __name__ == '__main__':
-    unittest.main()
