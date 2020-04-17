@@ -1,8 +1,9 @@
 import os
 import requests
+from typing import Dict, Any
 
 os.environ['NO_PROXY'] = '127.0.0.1'
-sent = {
+sent: Dict[str, Any] = {
     "keywords": ["PDP", "ODP", "terkonfirmasi positif", "orang", "kasus positif"],
     "texts": [],
     "filenames": [],
