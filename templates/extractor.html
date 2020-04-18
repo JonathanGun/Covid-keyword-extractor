@@ -3,20 +3,44 @@
 <div class="content-section">
     <form method="POST" enctype=multipart/form-data> {{ form.hidden_tag() }} <fieldset class="form-group">
         <legend class="border-bottom"> Information Extractor </legend>
-        <div>
-            <p class='text-muted'>You can upload more than one article at a time.</p>
+        <label class="form-control-label">Article</label>
+        <div class="mb-4 list-group" id="list-tab" role="tablist">
+            <a class="list-group-item list-group-item-action" id="list-clipboard-list" data-toggle="list" href="#list-clipboard" role="tab" aria-controls="clipboard">From Clipboard</a>
+            <a class="list-group-item list-group-item-action" id="list-website-list" data-toggle="list" href="#list-website" role="tab" aria-controls="website">From Website</a>
+            <a class="list-group-item list-group-item-action active" id="list-file-list" data-toggle="list" href="#list-file" role="tab" aria-controls="file">From File</a>
         </div>
-        <div>
-            {{ form.upload_files.label(class="form-control-label custom-upload-file-label") }}
-            {{ form.upload_files(class="form-control mb-4 custom-upload-file") }}
+        <div class="form-group mb-4">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade" id="list-clipboard" role="tabpanel" aria-labelledby="list-clipboard-list">
+                    {{ form.text.label(class="form-control-label") }}
+                    {{ form.text(rows="11", class="form-control") }}
+                </div>
+                <div class="tab-pane fade" id="list-website" role="tabpanel" aria-labelledby="list-website-list">
+                    {{ form.link.label(class="form-control-label") }}
+                    {{ form.link(class="form-control") }}
+                </div>
+                <div class="tab-pane fade show active" id="list-file" role="tabpanel" aria-labelledby="list-file-list">
+                    {{ form.upload_files.label(class="form-control-label custom-upload-file-label") }}
+                    <p class='text-muted'>You can upload more than one article at a time.</p>
+                    {{ form.upload_files(class="form-control custom-upload-file") }}
+                </div>
+            </div>
         </div>
-        <div>
+        <div class="mb-4">
             {{ form.keyword.label(class="form-control-label") }}
-            {{ form.keyword(class="form-control mb-4") }}
+            {{ form.keyword(rows="5", class="form-control") }}
         </div>
-        <div>
+        <div class="mb-4">
             {{ form.algorithm.label(class="form-control-label") }}
-            {{ form.algorithm(class="form-control mb-4") }}
+            {{ form.algorithm(class="form-control") }}
+        </div>
+        <div class="form-check mb-4">
+            <div type="checkbox" , id="weakCheck">
+                {{ form.allow_weak(class="form-check-input") }}
+            </div>
+            <div for="weakCheck">
+                {{ form.allow_weak.label(class="form-check-label") }}
+            </div>
         </div>
         </fieldset>
         {{ form.submit(class="btn btn-outline-info")}}

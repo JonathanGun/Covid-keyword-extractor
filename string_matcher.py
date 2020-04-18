@@ -84,11 +84,17 @@ class Regex(MatchStrategy):
 
 
 class StringMatcher:
-    def __init__(self, strategy = Regex()):
+    def __init__(self, strategy=Regex(), case_sensitive=False):
         self.strategy = strategy
+        self.case_sensitive = case_sensitive
 
     def change_strategy(self, strategy):
         self.strategy = strategy
 
+    def set_case_sensitive(self, value=True):
+        self.case_sensitive = value
+
     def match(self, txt, pat):
+        txt = txt if self.case_sensitive else txt.lower()
+        pat = pat if self.case_sensitive else pat.lower()
         return self.strategy.match(txt, pat)

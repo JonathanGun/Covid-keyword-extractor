@@ -1,17 +1,35 @@
 import os
 from flask import Flask, flash, request, render_template
 from forms import MyForm
+import requests
+from bs4 import BeautifulSoup  # type: ignore
 from string_matcher import StringMatcher, BoyerMoore, KMP, Regex
 from extractor import Extractor
+import nltk  # type: ignore
+nltk.data.path.append("libs\\nltk_data")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(32)
+app.config['UPLOAD_FOLDER'] = '/tmp'
 
 algorithm_map = {
     "boyer_moore": BoyerMoore(),
     "kmp": KMP(),
     "regex": Regex(),
 }
+
+
+def get_article(url) -> str:
+    result = requests.get(url)
+    c = result.content
+    soup = BeautifulSoup(c, features="html.parser")
+
+    article_text = []
+    article = soup.findAll("div")
+    for div in article:
+        for p in div.findAll("p"):
+            article_text.append('\n' + ''.join(p.findAll(text=True)))
+    return "\n".join(dict.fromkeys(article_text))
 
 
 def readfile(file) -> str:
@@ -36,8 +54,9 @@ example POST:
     "filenames": [
         "covid-19-indonesia.txt",
         "i only supply two filenames.txt"
-    ] # optional (default: 1..n),
-    "algorithm": "boyer-moore" # or "kmp" or "regex" (default: "regex")
+    ] (default: files-1..n),
+    "algorithm": "boyer_moore" # or "kmp" or "regex" (default: "regex")
+    "allow_weak" : "True" (default: "False")
 }
 """
 
@@ -49,33 +68,55 @@ def extractor():
         return render_template("extractor.html", form=form)
 
     keywords = []
-    algorithm = ""
+    algorithm = "regex"
     filenames = []
     texts = []
+    allow_weak = False
 
     if request.method == "POST":
         if form.validate_on_submit():
+            print("from user POST")
             keywords = form.keyword.data.split(',')
             algorithm = form.algorithm.data
             files = form.upload_files.data
-            if files:
+            allow_weak = form.allow_weak.data
+            if form.text.data:
+                texts.append(form.text.data)
+
+            elif form.link.data:
+                try:
+                    texts.append(get_article(form.link.data))
+                    filenames.append(form.link.data)
+                except Exception:
+                    return render_template("extractor.html", form=form)
+
+            elif files:
+                print(files)
                 for file in files:
                     if file.mimetype == 'text/plain':
                         texts.append(readfile(file))
                         filenames.append(file.filename)
-            if len(filenames) == 0:
-                flash(f"Please upload only text files", "danger")
-                return render_template("extractor.html", form=form)
+                    else:
+                        flash(f"Please upload only text files", "danger")
+                        return render_template("extractor.html", form=form)
         else:
+            print("from POST API")
             keywords = request.values.getlist('keywords')
             texts = request.values.getlist('texts')
-            filenames = request.values.getlist('filenames')
-            algorithm = request.values["algorithm"]
+            try:
+                filenames = request.values.getlist('filenames')
+            except KeyError:
+                pass
+            try:
+                algorithm = request.values["algorithm"]
+            except KeyError:
+                pass
+            try:
+                allow_weak = request.values["allow_weak"]
+            except KeyError:
+                pass
 
     try:
-        print(keywords)
-        print(texts)
-        print(algorithm)
         stringMatcher = StringMatcher(algorithm_map[algorithm])
         results = []
         for i in range(len(texts)):
@@ -84,7 +125,7 @@ def extractor():
                 result["filename"] = filenames[i]
             except IndexError:
                 result["filename"] = "file-" + str(i) + ".txt"
-            result["matches"] = Extractor(keywords=keywords, matcher=stringMatcher).extract(texts[i])
+            result["matches"] = Extractor(keywords=keywords, matcher=stringMatcher).extract(texts[i], allow_weak)
             results.append(result)
         if results:
             return render_template("result.html", results=results, len=len(results))
@@ -95,11 +136,10 @@ def extractor():
     return render_template("extractor.html", form=form)
 
 
-@app.route('/sample/<file_name>.txt')
-def send_text_file(file_name):
+@app.route('/sample/<filename>.txt')
+def send_text_file(filename):
     """Send your static text file."""
-    file_dot_text = file_name + '.txt'
-    return app.send_static_file(file_dot_text)
+    return app.send_static_file(filename + '.txt')
 
 
 @app.errorhandler(404)

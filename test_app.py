@@ -15,13 +15,40 @@ class TestApp(unittest.TestCase):
     def test_post(self):
         # send data as POST form to endpoint
         sent = {
-            "keywords": ["ODP", "PDP", "terkonfirmasi positif", "orang", "kasus positif"],
+            "keywords": [
+                "PDP", "ODP", "dalam pengawasan",
+                "positif", "negatif",
+                "sembuh", "meninggal",
+            ],
             "texts": [],
             "filenames": [],
-            "algorithm": "boyer-moore"  # or "kmp" or "regex" (default: "regex")
+            "algorithm": "boyer_moore",
         }
         sent["texts"].append(self.app.get('/sample/kompas1.txt').data.decode("utf-8"))
         sent["texts"].append(self.app.get('/sample/detik1.txt').data.decode("utf-8"))
+        sent["texts"].append(self.app.get('/sample/detik2.txt').data.decode("utf-8"))
+        rv = self.app.post(
+            '/extractor',
+            data=sent
+        )
+        # check result from server with expected data
+        self.assertEqual(rv.status_code, 200)
+
+    def test_post_english(self):
+        # send data as POST form to endpoint
+        sent = {
+            "keywords": [
+                "under supervision",
+                "positive", "negative",
+                "bed care", "confirmed",
+                "death",
+            ],
+            "texts": [],
+            "filenames": [],
+            "algorithm": "boyer_moore",
+        }
+        sent["texts"].append(self.app.get('/sample/washington1.txt').data.decode("utf-8"))
+        sent["texts"].append(self.app.get('/sample/cnbc1.txt').data.decode("utf-8"))
         rv = self.app.post(
             '/extractor',
             data=sent

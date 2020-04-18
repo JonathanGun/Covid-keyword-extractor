@@ -55,10 +55,18 @@
                     <h3>Getting Started</h3>
                     <p class='text-muted'>Here is some example articles
                         <ul class="list-group">
-                            <a href="{{ url_for('extractor') }}" class="list-group-item list-group-item-action">Example 1</a>
-                            <a href="{{ url_for('extractor') }}" class="list-group-item list-group-item-action">Kompas</a>
-                            <a href="{{ url_for('extractor') }}" class="list-group-item list-group-item-action">SinarMas</a>
-                            <a href="{{ url_for('extractor') }}" class="list-group-item list-group-item-action">Line Today</a>
+                            <a href="{{ url_for('send_text_file', filename='kompas1') }}" class="list-group-item list-group-item-action">
+                                Kompas
+                            </a>
+                            <a href="{{ url_for('send_text_file', filename='detik2') }}" class="list-group-item list-group-item-action">
+                                Detik News
+                            </a>
+                            <a href="{{ url_for('send_text_file', filename='washington1') }}" class="list-group-item list-group-item-action">
+                                Washington News
+                            </a>
+                            <a href="{{ url_for('send_text_file', filename='cnbc1') }}" class="list-group-item list-group-item-action">
+                                CNBC
+                            </a>
                         </ul>
                     </p>
                 </div>

@@ -26,6 +26,20 @@ class TestClass:
         ]
     }
 
+    test_simple_insensitive: Final[Dict[str, List[Tuple[str, int]]]] = {
+        "aa": [
+            ("A", 0),
+            ("B", -1),
+        ],
+        "ABcA": [
+            ("A", 0),
+            ("B", 1),
+            ("C", 2),
+            ("bC", 1),
+            ("Ca", 2),
+        ],
+    }
+
     def __util(self, Strategy, test_case: Dict[str, List[Tuple[str, int]]]) -> int:
         matcher = StringMatcher(Strategy())
         for txt, pats in test_case.items():
@@ -52,3 +66,8 @@ class TestClass:
         assert self.__util(KMP, self.test_simple) == self.__util(BoyerMoore, self.test_simple)
         assert self.__util(KMP, self.test_long) == self.__util(Regex, self.test_long)
         assert self.__util(KMP, self.test_long) == self.__util(BoyerMoore, self.test_long)
+
+    def test_insensitive(self) -> None:
+        self.__util(BoyerMoore, self.test_simple_insensitive)
+        self.__util(KMP, self.test_simple_insensitive)
+        self.__util(Regex, self.test_simple_insensitive)
