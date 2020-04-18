@@ -1,3 +1,6 @@
+mypy>=0.770
+pytest>=5.4.1
+pytest-cov>=2.8.1
 flask
 flask_wtf
 wtforms
