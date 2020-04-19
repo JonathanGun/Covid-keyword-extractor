@@ -1,0 +1,7 @@
+coverage:
+  status:
+    project:
+      default: false  # disable the default status that measures entire project
+      tests:  # declare a new status context "tests"
+        target: 40%
+    patch: off
