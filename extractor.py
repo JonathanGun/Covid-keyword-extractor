@@ -18,6 +18,7 @@ class Match:
         for n in self.num:
             self.sentence = self.sentence.replace(n, "<b>" + n + "</b>")
         self.num = " | ".join(self.num)
+        self.weak = num == []
 
 
 class Extractor:
@@ -28,8 +29,16 @@ class Extractor:
     def __remove_non_printable_char(self, text: str) -> str:
         return ''.join(filter(lambda x: x in set(string.printable), text))
 
+    def __add_period_to_eol(self, text: str) -> str:
+        return re.sub(r'(?<=[^.\n])(?:\n+)(?=[^\n])', r';;;', text, re.M)
+
     def __preprocess_text(self, text: str) -> str:
         text = self.__remove_non_printable_char(text).strip()
+        print("======================before")
+        print(repr(text))
+        text = self.__add_period_to_eol(text)
+        print("======================after")
+        print(repr(text))
         return text
 
     def __list_to_regex_union(self, patterns: List[str]) -> str:
@@ -89,8 +98,8 @@ class Extractor:
         }
         patterns = [
             "seorang", "sebuah kasus",
-            r"(?:(?:(?<=\D)|^)(?:\d+(?:\.\d{3})*(?:\.\d+)|\d+)| " + self.__list_to_regex_union(numbers["id"]) + ")" + " (?:pasien|orang|kasus)",
-            r"(?:(?:(?<=\D)|^)(?:\d+(?:,\d{3})*(?:,\d+)|\d+)|" + self.__list_to_regex_union(numbers["en"]) + ")" + r" (?:patient|people|case|active case|new|confirmed|death)",
+            r"(?:(?:(?<=\s)|^)(?:\d+(?:\.\d{3})*(?:.\d+)|\d+)| " + self.__list_to_regex_union(numbers["id"]) + ")" + " (?:pasien|orang|kasus)",
+            r"(?:(?:(?<=\s)|^)(?:\d+(?:,\d{3})*(?:,\d+)|\d+)|" + self.__list_to_regex_union(numbers["en"]) + ")" + r" (?:patient|people|case|active case|new|confirmed|death)",
         ]
         return self.__find_util(patterns, text)
 
@@ -108,11 +117,10 @@ class Extractor:
         first_sentence = True
         meta = {}
         weak_cnt = 0
-        print(text)
         for sentence in sent_tokenize(text):
             print(sentence)
             for keyword in self.keywords:
-                idx = self.matcher.match(sentence, keyword)
+                idx = self.matcher.match(sentence.strip(), keyword.strip())
                 if idx != -1 or first_sentence:
                     date = self.__find_date_time(sentence)
                     num = list(set(self.__find_nums(sentence)))

@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <div id="accordion mb-4">
+    <p><b> {{ results|length }} </b> files processed </p>
     {% for result in results %}
     <div class="card">
         <button class="btn btn-dark" data-toggle="collapse" data-target="#collapse-{{ loop.index }}" aria-expanded="true" aria-controls="collapse-{{ loop.index }}">
@@ -9,7 +10,7 @@
         <div id="collapse-{{ loop.index }}" class="collapse show" aria-labelledby="heading-{{ loop.index }}">
             <div class="card-body">
                 <ul class="list-group">
-                    {{ "No Keyword Matches" if result.matches|length == 0 else "" }}
+                    <p> <b>{{ result.count.total }}</b> matches (<b>{{ result.count.weak }}</b> weak/partial matches) found </p>
                     {% for match in result.matches %}
                     <li class="list-group-item">
                         <div>

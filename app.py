@@ -33,7 +33,12 @@ def get_article(url) -> str:
 
 
 def readfile(file) -> str:
-    return "".join(list(x.decode("utf-8").rstrip("\r\n").rstrip("\n") for x in file.readlines()))
+    text = ""
+    for line in "".join(list(x.decode("utf-8").replace('\r', '') for x in file.readlines())).split("\n"):
+        if line:
+            text += line
+            text += ". " if line[-1] != "." else ""
+    return text
 
 
 @app.route('/')
@@ -126,9 +131,13 @@ def extractor():
             except IndexError:
                 result["filename"] = "file-" + str(i) + ".txt"
             result["matches"] = Extractor(keywords=keywords, matcher=stringMatcher).extract(texts[i], allow_weak)
+            result["count"] = {
+                "total": len(result["matches"]),
+                "weak": len(list(match for match in result["matches"] if match.weak)),
+            }
             results.append(result)
         if results:
-            return render_template("result.html", results=results, len=len(results))
+            return render_template("result.html", results=results)
 
     except Exception:
         pass
