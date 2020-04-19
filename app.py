@@ -37,7 +37,7 @@ def readfile(file) -> str:
     for line in "".join(list(x.decode("utf-8").replace('\r', '') for x in file.readlines())).split("\n"):
         if line:
             text += line
-            text += ". " if line[-1] != "." else ""
+            text += ". " if line[-1] != "." else " "
     return text
 
 

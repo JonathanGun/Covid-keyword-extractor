@@ -49,10 +49,10 @@ class Extractor:
 
     def __find_dates(self, text: str):
         months = [
-            "jan", "feb", "mar", "apr", "mei", "jun", "jul", "ags", "sep", "sept", "nov", "des",
             "januari", "februari", "maret", "april", "juni", "juli", "agustus", "september", "november", "desember",
-            "may", "aug", "dec"
             "january", "february", "march", "june", "july", "august", "december"
+            "jan", "feb", "mar", "apr", "mei", "jun", "jul", "ags", "sep", "sept", "nov", "des",
+            "may", "aug", "dec"
         ]
         patterns = [
             r"(?:(?<=\D)|^)\d{1,2}\/\d{1,2}\/\d{4}(?:(?=\D)|$)",
@@ -78,9 +78,8 @@ class Extractor:
     def __find_days(self, text: str):
         patterns = [
             "senin", "selasa", "rabu", "kamis", "jumat", "sabtu", "minggu",
-            "mon", "tue", "wed", "thu", "fri", "sat", "sun",
             "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
-            r"(?:se|[a-zA-Z]* )hari(?: sebelumnya| setelahnya|[^0-9a-zA-Z])",
+            r"(?:se|\w )hari(?: sebelumnya| setelahnya|[^0-9a-zA-Z])",
         ]
         return self.__find_util(patterns, text)
 
@@ -97,9 +96,12 @@ class Extractor:
             ],
         }
         patterns = [
-            "seorang", "sebuah kasus",
-            r"(?:(?:(?<=\s)|^)(?:\d+(?:\.\d{3})*(?:.\d+)|\d+)| " + self.__list_to_regex_union(numbers["id"]) + ")" + " (?:pasien|orang|kasus)",
-            r"(?:(?:(?<=\s)|^)(?:\d+(?:,\d{3})*(?:,\d+)|\d+)|" + self.__list_to_regex_union(numbers["en"]) + ")" + r" (?:patient|people|case|active case|new|confirmed|death)",
+            "seorang", "sebuah kasus", "beberapa",
+            r"(?:(?:(?<=\s)|^)(?:(?:\d{1,3}(?:\.\d{3})*(?:\.\d+)|\d+))| " + self.__list_to_regex_union(numbers["id"]) + ")" + " (?:pasien|orang|kasus)",
+            r"(?:(?:(?<=\s)|^)(?:(?:\d{1,3}(?:,\d{3})*(?:,\d+)|\d+))|" + self.__list_to_regex_union(numbers["en"]) + ")" + r" (?:patient|people|case|\w case|\w \w case|confirmed|death)",
+            r"(?:(?<=\s)|^)(?:\d+(?:,\d{3})*(?:,\d+))",
+            self.__list_to_regex_union(["as", "additional", "of", "to"]) + r" (?:(?<=\s)|^)(?:\d+)(?=[^,])",
+            "some", "many", "most"
         ]
         return self.__find_util(patterns, text)
 
@@ -107,7 +109,7 @@ class Extractor:
         day = next(self.__find_days(text), "")
         date = next(self.__find_dates(text), "")
         time = next(self.__find_times(text), "")
-        day = day + ", " if (day and date) else ""
+        day += ", " if (day and date) else ""
         date += " " if time else ""
         return day + date + time
 
