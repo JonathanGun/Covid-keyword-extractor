@@ -1,7 +1,7 @@
-from flask_wtf import FlaskForm  # type: ignore
-from flask_wtf.file import FileAllowed  # type: ignore
-from wtforms import SubmitField, TextAreaField, SelectField, MultipleFileField, BooleanField, StringField  # type: ignore
-from wtforms.validators import DataRequired  # type: ignore
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed
+from wtforms import SubmitField, TextAreaField, SelectField, MultipleFileField, BooleanField, StringField
+from wtforms.validators import DataRequired
 
 
 class MyForm(FlaskForm):

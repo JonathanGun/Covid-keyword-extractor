@@ -2,7 +2,7 @@ import os
 from flask import Flask, flash, request, render_template
 from forms import MyForm
 import requests
-from bs4 import BeautifulSoup  # type: ignore
+from bs4 import BeautifulSoup
 from string_matcher import StringMatcher, BoyerMoore, KMP, Regex
 from extractor import Extractor
 
