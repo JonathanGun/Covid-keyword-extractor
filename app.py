@@ -104,6 +104,7 @@ def extractor():
                         return render_template("extractor.html", form=form)
         else:
             print("from POST API")
+            print(form.errors)
             keywords = request.values.getlist('keywords')
             texts = request.values.getlist('texts')
             try:
