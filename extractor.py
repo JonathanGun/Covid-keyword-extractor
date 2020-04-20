@@ -35,7 +35,7 @@ class Extractor:
         return ''.join(filter(lambda x: x in set(string.printable), text))
 
     def __add_period_to_eol(self, text: str) -> str:
-        return re.sub(r'(?<=[^.\n])(?:\n+)(?=[^\n])', r';;;', text, re.M)
+        return re.sub(r'(?<=[^.\n])(?:\n+)(?=[^\n])', r'.', text, re.M)
 
     def __preprocess_text(self, text: str) -> str:
         text = self.__remove_non_printable_char(text).strip()
