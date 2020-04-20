@@ -6,15 +6,25 @@ A simple web app to extract information from plain text made using Flask Python 
 1. Python 3.x (tested on 3.6+)
 1. Flask
 1. WTForms
-1. typing (optional)
+1. nltk (optional - some included in this repo)
+1. requests (optional - for getting article through link)
+1. bs4 (optional)
+1. typing (optional - for static analysis)
 ```
 pip install -r requirements.txt
 ```
 
 ## Running
 ```
-python src/app.py
+python app.py
 ```
+or
+```
+python3 app.py
+```
+
+## Built With
+- Flask and WTForms
 
 ## Contributing
 Feel free to fork and made a pull request, make sure to test it first using pytest
@@ -25,6 +35,9 @@ cd src
 pip install pytest
 pytest
 ```
+
+## Authors
+- Jonathan Yudi Gunawan - Initial work
 
 ## Acknowlegdement
 This program is made to fulfill IF2211 Strategi Algoritma assessment.
