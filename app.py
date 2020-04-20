@@ -5,8 +5,6 @@ import requests
 from bs4 import BeautifulSoup  # type: ignore
 from string_matcher import StringMatcher, BoyerMoore, KMP, Regex
 from extractor import Extractor
-import nltk  # type: ignore
-nltk.data.path.append("libs\\nltk_data")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(32)

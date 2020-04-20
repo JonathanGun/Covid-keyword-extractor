@@ -6,7 +6,7 @@ A simple web app to extract information from plain text made using Flask Python 
 1. Python 3.x (tested on 3.6+)
 1. Flask
 1. WTForms
-1. nltk (optional - some included in this repo)
+1. nltk
 1. requests (optional - for getting article through link)
 1. bs4 (optional)
 1. typing (optional - for static analysis)

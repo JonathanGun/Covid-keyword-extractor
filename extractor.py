@@ -2,9 +2,14 @@ from typing import List
 from string_matcher import StringMatcher
 import re
 import string
-from nltk.tokenize import sent_tokenize  # type: ignore
+import nltk
 
 DEBUG = True
+
+
+def sent_tokenize(text: str) -> List[str]:
+    sent_detector = nltk.data.load('libs/english_tokenizer.pickle')
+    return sent_detector.tokenize(text.strip())
 
 
 class Match:
