@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ## Running
 
 ```bash
-python3 main.py
+python3 app.py
 ```
 
 ## Built With
