@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from string_matcher import StringMatcher, BoyerMoore, KMP, Regex
 from extractor import Extractor
+import nltk
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(32)
@@ -161,4 +162,6 @@ def page_not_found(error):
 
 
 if __name__ == "__main__":
+    nltk.download("punkt")
+    nltk.download("punkt_tab")
     app.run()
