@@ -22,7 +22,7 @@ class TestClass:
         "Konfirmasi positif coronavirus atau Covid-19 dari pemeriksaan PCR menjadi 5.516 orang,": [
             ("positif", 11),
             ("PCA", -1),
-            ("Kon", 0)
+            ("Kon", 0),
         ]
     }
 
@@ -62,10 +62,16 @@ class TestClass:
         self.__util(Regex, self.test_long)
 
     def test_integrate(self) -> None:
-        assert self.__util(KMP, self.test_simple) == self.__util(Regex, self.test_simple)
-        assert self.__util(KMP, self.test_simple) == self.__util(BoyerMoore, self.test_simple)
+        assert self.__util(KMP, self.test_simple) == self.__util(
+            Regex, self.test_simple
+        )
+        assert self.__util(KMP, self.test_simple) == self.__util(
+            BoyerMoore, self.test_simple
+        )
         assert self.__util(KMP, self.test_long) == self.__util(Regex, self.test_long)
-        assert self.__util(KMP, self.test_long) == self.__util(BoyerMoore, self.test_long)
+        assert self.__util(KMP, self.test_long) == self.__util(
+            BoyerMoore, self.test_long
+        )
 
     def test_insensitive(self) -> None:
         self.__util(BoyerMoore, self.test_simple_insensitive)

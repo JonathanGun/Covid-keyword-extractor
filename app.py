@@ -7,8 +7,8 @@ from string_matcher import StringMatcher, BoyerMoore, KMP, Regex
 from extractor import Extractor
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(32)
-app.config['UPLOAD_FOLDER'] = '/tmp'
+app.config["SECRET_KEY"] = os.urandom(32)
+app.config["UPLOAD_FOLDER"] = "/tmp"
 
 algorithm_map = {
     "boyer_moore": BoyerMoore(),
@@ -26,20 +26,22 @@ def get_article(url) -> str:
     article = soup.findAll("div")
     for div in article:
         for p in div.findAll("p"):
-            article_text.append('\n' + ''.join(p.findAll(text=True)))
+            article_text.append("\n" + "".join(p.findAll(text=True)))
     return "\n".join(dict.fromkeys(article_text))
 
 
 def readfile(file) -> str:
     text = ""
-    for line in "".join(list(x.decode("utf-8").replace('\r', '') for x in file.readlines())).split("\n"):
+    for line in "".join(
+        list(x.decode("utf-8").replace("\r", "") for x in file.readlines())
+    ).split("\n"):
         if line:
             text += line
             text += ". " if line[-1] != "." else " "
     return text
 
 
-@app.route('/')
+@app.route("/")
 def index():
     return render_template("index.html")
 
@@ -64,7 +66,7 @@ example POST:
 """
 
 
-@app.route('/extractor', methods=['GET', 'POST'])
+@app.route("/extractor", methods=["GET", "POST"])
 def extractor():
     form = MyForm()
     if request.method == "GET":
@@ -79,7 +81,7 @@ def extractor():
     if request.method == "POST":
         if form.validate_on_submit():
             print("from user POST")
-            keywords = form.keyword.data.split(',')
+            keywords = form.keyword.data.split(",")
             algorithm = form.algorithm.data
             files = form.upload_files.data
             allow_weak = form.allow_weak.data
@@ -96,7 +98,7 @@ def extractor():
             elif files:
                 print(files)
                 for file in files:
-                    if file.mimetype == 'text/plain':
+                    if file.mimetype == "text/plain":
                         texts.append(readfile(file))
                         filenames.append(file.filename)
                     else:
@@ -105,10 +107,10 @@ def extractor():
         else:
             print("from POST API")
             print(form.errors)
-            keywords = request.values.getlist('keywords')
-            texts = request.values.getlist('texts')
+            keywords = request.values.getlist("keywords")
+            texts = request.values.getlist("texts")
             try:
-                filenames = request.values.getlist('filenames')
+                filenames = request.values.getlist("filenames")
             except KeyError:
                 pass
             try:
@@ -129,7 +131,9 @@ def extractor():
                 result["filename"] = filenames[i]
             except IndexError:
                 result["filename"] = "file-" + str(i) + ".txt"
-            result["matches"] = Extractor(keywords=keywords, matcher=stringMatcher).extract(texts[i], allow_weak)
+            result["matches"] = Extractor(
+                keywords=keywords, matcher=stringMatcher
+            ).extract(texts[i], allow_weak)
             result["count"] = {
                 "total": len(result["matches"]),
                 "weak": len(list(match for match in result["matches"] if match.weak)),
@@ -144,17 +148,17 @@ def extractor():
     return render_template("extractor.html", form=form)
 
 
-@app.route('/sample/<filename>.txt')
+@app.route("/sample/<filename>.txt")
 def send_text_file(filename):
     """Send your static text file."""
-    return app.send_static_file(filename + '.txt')
+    return app.send_static_file(filename + ".txt")
 
 
 @app.errorhandler(404)
 def page_not_found(error):
     """Custom 404 page."""
-    return render_template('404.html', title="Page Not Found"), 404
+    return render_template("404.html", title="Page Not Found"), 404
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

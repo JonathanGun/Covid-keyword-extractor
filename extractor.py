@@ -2,14 +2,9 @@ from typing import List
 from string_matcher import StringMatcher
 import re
 import string
-import nltk
+from nltk.tokenize import sent_tokenize
 
-DEBUG = True
-
-
-def sent_tokenize(text: str) -> List[str]:
-    sent_detector = nltk.data.load('libs/english_tokenizer.pickle')
-    return sent_detector.tokenize(text.strip())
+DEBUG = False
 
 
 class Match:
@@ -18,7 +13,9 @@ class Match:
         self.sentence = sentence
         self.date = date
         self.num = num
-        self.sentence = self.sentence.replace(self.keyword, "<b>" + self.keyword + "</b>")
+        self.sentence = self.sentence.replace(
+            self.keyword, "<b>" + self.keyword + "</b>"
+        )
         self.sentence = self.sentence.replace(self.date, "<b>" + self.date + "</b>")
         for n in self.num:
             self.sentence = self.sentence.replace(n, "<b>" + n + "</b>")
@@ -32,10 +29,10 @@ class Extractor:
         self.matcher = matcher
 
     def __remove_non_printable_char(self, text: str) -> str:
-        return ''.join(filter(lambda x: x in set(string.printable), text))
+        return "".join(filter(lambda x: x in set(string.printable), text))
 
     def __add_period_to_eol(self, text: str) -> str:
-        return re.sub(r'(?<=[^.\n])(?:\n+)(?=[^\n])', r'. ', text, re.M)
+        return re.sub(r"(?<=[^.\n])(?:\n+)(?=[^\n])", r". ", text, re.M)
 
     def __preprocess_text(self, text: str) -> str:
         text = self.__remove_non_printable_char(text).strip()
@@ -50,40 +47,93 @@ class Extractor:
         return "(?:" + "|".join(patterns) + ")"
 
     def __find_util(self, patterns, text: str):
-        return (text[match.start():match.end()] for match in re.finditer(self.__list_to_regex_union(patterns), text.lower()))
+        return (
+            text[match.start() : match.end()]
+            for match in re.finditer(self.__list_to_regex_union(patterns), text.lower())
+        )
 
     def __find_dates(self, text: str):
         months = [
-            "januari", "februari", "maret", "april", "juni", "juli", "agustus", "september", "november", "desember",
-            "january", "february", "march", "june", "july", "august", "december"
-            "jan", "feb", "mar", "apr", "mei", "jun", "jul", "ags", "sep", "sept", "nov", "des",
-            "may", "aug", "dec"
+            "januari",
+            "februari",
+            "maret",
+            "april",
+            "juni",
+            "juli",
+            "agustus",
+            "september",
+            "november",
+            "desember",
+            "january",
+            "february",
+            "march",
+            "june",
+            "july",
+            "august",
+            "december" "jan",
+            "feb",
+            "mar",
+            "apr",
+            "mei",
+            "jun",
+            "jul",
+            "ags",
+            "sep",
+            "sept",
+            "nov",
+            "des",
+            "may",
+            "aug",
+            "dec",
         ]
         patterns = [
             r"(?:(?<=\D)|^)\d{1,2}\/\d{1,2}\/\d{4}(?:(?=\D)|$)",
-            r"(?:(?<=\D)|^)\d{1,2} " + self.__list_to_regex_union(months) + r" \d{4}(?:(?=\D)|$)",
-            r"(?:(?<=\D)|^)\d{1,2} " + self.__list_to_regex_union(months) + r"(?:(?=\D)|$)",
-            self.__list_to_regex_union(months) + r" (?:(?<=\D)|^)\d{1,2}," + r" \d{4}(?:(?=\D)|$)",
+            r"(?:(?<=\D)|^)\d{1,2} "
+            + self.__list_to_regex_union(months)
+            + r" \d{4}(?:(?=\D)|$)",
+            r"(?:(?<=\D)|^)\d{1,2} "
+            + self.__list_to_regex_union(months)
+            + r"(?:(?=\D)|$)",
+            self.__list_to_regex_union(months)
+            + r" (?:(?<=\D)|^)\d{1,2},"
+            + r" \d{4}(?:(?=\D)|$)",
             self.__list_to_regex_union(months) + r" (?:(?<=\D)|^)\d{1,2}",
         ]
         return self.__find_util(patterns, text)
 
     def __find_times(self, text: str):
         timezones = [
-            "wib", "wita", "wit",
+            "wib",
+            "wita",
+            "wit",
             r"gmt\+\d{1,2}",
             r"(?:[a|p]\.m\.) gmt\+\d{1,2}",
-            "am", "pm",
+            "am",
+            "pm",
         ]
         patterns = [
-            r"(?:(?<=\D)|^)\d{1,2}[:|.]\d{2}(?: " + self.__list_to_regex_union(timezones) + r"|(?=\D)|$)",
+            r"(?:(?<=\D)|^)\d{1,2}[:|.]\d{2}(?: "
+            + self.__list_to_regex_union(timezones)
+            + r"|(?=\D)|$)",
         ]
         return self.__find_util(patterns, text)
 
     def __find_days(self, text: str):
         patterns = [
-            "senin", "selasa", "rabu", "kamis", "jumat", "sabtu", "minggu",
-            "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
+            "senin",
+            "selasa",
+            "rabu",
+            "kamis",
+            "jumat",
+            "sabtu",
+            "minggu",
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
             r"(?:se|\w )hari(?: sebelumnya| setelahnya|[^0-9a-zA-Z])",
         ]
         return self.__find_util(patterns, text)
@@ -91,22 +141,58 @@ class Extractor:
     def __find_nums(self, text: str) -> List[str]:
         numbers = {
             "id": [
-                "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh",
-                "sebelas", r"\w+ belas", r"\w+ puluh", r"\w+ ratus", r"\w+ ribu", r"\w+ juta"
+                "satu",
+                "dua",
+                "tiga",
+                "empat",
+                "lima",
+                "enam",
+                "tujuh",
+                "delapan",
+                "sembilan",
+                "sepuluh",
+                "sebelas",
+                r"\w+ belas",
+                r"\w+ puluh",
+                r"\w+ ratus",
+                r"\w+ ribu",
+                r"\w+ juta",
             ],
             "en": [
-                "a", "an" "one",
-                "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
-                "eleven", "twelve", r"\S+teen",
+                "a",
+                "an" "one",
+                "two",
+                "three",
+                "four",
+                "five",
+                "six",
+                "seven",
+                "eight",
+                "nine",
+                "ten",
+                "eleven",
+                "twelve",
+                r"\S+teen",
             ],
         }
         patterns = [
-            "seorang", "sebuah kasus", "beberapa",
-            r"(?:(?:(?<=\s)|^)(?:(?:\d{1,3}(?:\.\d{3})*(?:\.\d+)|\d+))| " + self.__list_to_regex_union(numbers["id"]) + ")" + " (?:pasien|orang|kasus)",
-            r"(?:(?:(?<=\s)|^)(?:(?:\d{1,3}(?:,\d{3})*(?:,\d+)|\d+))|" + self.__list_to_regex_union(numbers["en"]) + ")" + r" (?:patient|people|case|\w case|\w \w case|confirmed|death)",
+            "seorang",
+            "sebuah kasus",
+            "beberapa",
+            r"(?:(?:(?<=\s)|^)(?:(?:\d{1,3}(?:\.\d{3})*(?:\.\d+)|\d+))| "
+            + self.__list_to_regex_union(numbers["id"])
+            + ")"
+            + " (?:pasien|orang|kasus)",
+            r"(?:(?:(?<=\s)|^)(?:(?:\d{1,3}(?:,\d{3})*(?:,\d+)|\d+))|"
+            + self.__list_to_regex_union(numbers["en"])
+            + ")"
+            + r" (?:patient|people|case|\w case|\w \w case|confirmed|death)",
             r"(?:(?<=\s)|^)(?:\d+(?:,\d{3})*(?:,\d+))",
-            self.__list_to_regex_union(["as", "additional", "of", "to"]) + r" (?:(?<=\s)|^)(?:\d+)(?=[^,])",
-            "some", "many", "most"
+            self.__list_to_regex_union(["as", "additional", "of", "to"])
+            + r" (?:(?<=\s)|^)(?:\d+)(?=[^,])",
+            "some",
+            "many",
+            "most",
         ]
         return self.__find_util(patterns, text)
 

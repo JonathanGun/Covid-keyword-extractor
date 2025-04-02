@@ -2,52 +2,121 @@
 {% block content %}
 <div class="content-section">
     <form method="POST" enctype=multipart/form-data> {{ form.hidden_tag() }} <fieldset class="form-group">
-        <legend class="border-bottom"> Information Extractor </legend>
-        <label class="form-control-label">Article</label>
-        <div class="mb-4 list-group" id="list-tab" role="tablist">
-            <a class="list-group-item list-group-item-action" id="list-clipboard-list" data-toggle="list" href="#list-clipboard" role="tab" aria-controls="clipboard">From Clipboard</a>
-            <a class="list-group-item list-group-item-action" id="list-website-list" data-toggle="list" href="#list-website" role="tab" aria-controls="website">From Website</a>
-            <a class="list-group-item list-group-item-action active" id="list-file-list" data-toggle="list" href="#list-file" role="tab" aria-controls="file">From File</a>
-        </div>
-        <div class="form-group mb-4">
-            <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade" id="list-clipboard" role="tabpanel" aria-labelledby="list-clipboard-list">
-                    {{ form.text.label(class="form-control-label") }}
-                    {{ form.text(rows="11", class="form-control") }}
-                </div>
-                <div class="tab-pane fade" id="list-website" role="tabpanel" aria-labelledby="list-website-list">
-                    {{ form.link.label(class="form-control-label") }}
-                    {{ form.link(class="form-control") }}
-                </div>
-                <div class="tab-pane fade show active" id="list-file" role="tabpanel" aria-labelledby="list-file-list">
-                    {{ form.upload_files.label(class="form-control-label custom-upload-file-label") }}
-                    <p class='text-muted'>You can upload more than one article at a time.</p>
-                    {{ form.upload_files(class="form-control custom-upload-file") }}
+            <legend class="border-bottom"> Information Extractor </legend>
+            <label class="form-control-label">Article</label>
+            <div class="mb-4 list-group" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="list-clipboard-list" data-toggle="list"
+                    href="#list-clipboard" role="tab" aria-controls="clipboard">From Clipboard</a>
+                <a class="list-group-item list-group-item-action" id="list-website-list" data-toggle="list"
+                    href="#list-website" role="tab" aria-controls="website">From Website</a>
+                <a class="list-group-item list-group-item-action" id="list-file-list" data-toggle="list"
+                    href="#list-file" role="tab" aria-controls="file">From File</a>
+            </div>
+            <div class="form-group mb-4">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="list-clipboard" role="tabpanel"
+                        aria-labelledby="list-clipboard-list">
+                        {{ form.text.label(class="form-control-label") }}
+                        {{ form.text(rows="11", class="form-control") }}
+                    </div>
+                    <div class="tab-pane fade" id="list-website" role="tabpanel" aria-labelledby="list-website-list">
+                        {{ form.link.label(class="form-control-label") }}
+                        {{ form.link(class="form-control") }}
+                    </div>
+                    <div class="tab-pane fade" id="list-file" role="tabpanel" aria-labelledby="list-file-list">
+                        {{ form.upload_files.label(class="form-control-label custom-upload-file-label") }}
+                        <p class='text-muted'>You can upload more than one article at a time.</p>
+                        {{ form.upload_files(class="form-control custom-upload-file") }}
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="mb-4">
-            {{ form.keyword.label(class="form-control-label") }}
-            {{ form.keyword(rows="5", class="form-control") }}
-            <p> Featured keywords: </p>
-            <p> PDP, ODP, pengawasan, positif, negatif, sembuh, meninggal, death, cure, supervision, positive, negative, confirm, konfirmasi, terjangkit </p>
-        </div>
-        <div class="mb-4">
-            {{ form.algorithm.label(class="form-control-label") }}
-            {{ form.algorithm(class="form-control") }}
-        </div>
-        <div class="form-check mb-4">
-            <div type="checkbox" , id="weakCheck">
-                {{ form.allow_weak(class="form-check-input") }}
+            <div class="mb-4">
+                {{ form.keyword.label(class="form-control-label") }}
+                {{ form.keyword(rows="5", class="form-control") }}
+                <p> Featured keywords: </p>
+                <p id="featured-keywords">PDP, ODP, pengawasan, positif, negatif, sembuh, meninggal, death, cure,
+                    supervision, positive, negative, confirm, konfirmasi, terjangkit</p>
+                <button type="button" class="btn btn-outline-secondary" onclick="insertKeywordsIntoField()">Use Featured
+                    Keywords</button>
             </div>
-            <div for="weakCheck">
-                {{ form.allow_weak.label(class="form-check-label") }}
+            <script>
+                function insertKeywordsIntoField() {
+                    const keywords = document.getElementById('featured-keywords').innerText;
+                    const keywordField = document.querySelector('[name="keyword"]');
+                    if (keywordField) {
+                        keywordField.value = keywords;
+                    }
+                }
+            </script>
+            <div class="mb-4">
+                {{ form.algorithm.label(class="form-control-label") }}
+                {{ form.algorithm(class="form-control") }}
             </div>
-        </div>
+            <div class="form-check mb-4">
+                <div type="checkbox" , id="weakCheck">
+                    {{ form.allow_weak(class="form-check-input") }}
+                </div>
+                <div for="weakCheck">
+                    {{ form.allow_weak.label(class="form-check-label") }}
+                </div>
+            </div>
         </fieldset>
         {{ form.submit(class="btn btn-outline-info")}}
     </form>
-    <div>
-    </div>
 </div>
 {% endblock content %}
+{% block sidebar %}
+<div>
+    <h3>Getting Started</h3>
+    <p class='text-muted'>Here is some example articles
+    <ul class="list-group">
+        <a href="{{ url_for('send_text_file', filename='kompas1') }}" class="list-group-item list-group-item-action">
+            Kompas
+        </a>
+        <a href="{{ url_for('send_text_file', filename='detik2') }}" class="list-group-item list-group-item-action">
+            Detik News
+        </a>
+        <a href="{{ url_for('send_text_file', filename='washington1') }}"
+            class="list-group-item list-group-item-action">
+            Washington News
+        </a>
+        <a href="{{ url_for('send_text_file', filename='cnbc1') }}" class="list-group-item list-group-item-action">
+            CNBC
+        </a>
+    </ul>
+    </p>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebarLinks = document.querySelectorAll('.list-group-item-action');
+
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', async function (event) {
+                event.preventDefault();
+
+                // Select the "From Clipboard" tab
+                const clipboardTab = document.getElementById('list-clipboard-list');
+                const clipboardContent = document.getElementById('list-clipboard');
+                const allTabs = document.querySelectorAll('.tab-pane');
+                const allTabLinks = document.querySelectorAll('#list-tab .list-group-item-action');
+
+                allTabs.forEach(tab => tab.classList.remove('show', 'active'));
+                allTabLinks.forEach(tabLink => tabLink.classList.remove('active'));
+
+                clipboardTab.classList.add('active');
+                clipboardContent.classList.add('show', 'active');
+
+                // Fetch the content from the URL
+                const response = await fetch(link.href);
+                const text = await response.text();
+
+                // Set the content to the "Article" text field
+                const articleField = document.querySelector('[name="text"]');
+                if (articleField) {
+                    articleField.value = text;
+                }
+            });
+        });
+    });
+</script>
+{% endblock sidebar %}

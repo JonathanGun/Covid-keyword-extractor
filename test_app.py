@@ -8,7 +8,7 @@ class TestApp(unittest.TestCase):
         self.app = app.test_client()
 
     def test_home_page_works(self):
-        rv = self.app.get('/')
+        rv = self.app.get("/")
         self.assertTrue(rv.data)
         self.assertEqual(rv.status_code, 200)
 
@@ -16,21 +16,22 @@ class TestApp(unittest.TestCase):
         # send data as POST form to endpoint
         sent = {
             "keywords": [
-                "PDP", "ODP", "dalam pengawasan",
-                "positif", "negatif",
-                "sembuh", "meninggal",
+                "PDP",
+                "ODP",
+                "dalam pengawasan",
+                "positif",
+                "negatif",
+                "sembuh",
+                "meninggal",
             ],
             "texts": [],
             "filenames": [],
             "algorithm": "boyer_moore",
         }
-        sent["texts"].append(self.app.get('/sample/kompas1.txt').data.decode("utf-8"))
-        sent["texts"].append(self.app.get('/sample/detik1.txt').data.decode("utf-8"))
-        sent["texts"].append(self.app.get('/sample/detik2.txt').data.decode("utf-8"))
-        rv = self.app.post(
-            '/extractor',
-            data=sent
-        )
+        sent["texts"].append(self.app.get("/sample/kompas1.txt").data.decode("utf-8"))
+        sent["texts"].append(self.app.get("/sample/detik1.txt").data.decode("utf-8"))
+        sent["texts"].append(self.app.get("/sample/detik2.txt").data.decode("utf-8"))
+        rv = self.app.post("/extractor", data=sent)
         # check result from server with expected data
         self.assertEqual(rv.status_code, 200)
 
@@ -39,25 +40,26 @@ class TestApp(unittest.TestCase):
         sent = {
             "keywords": [
                 "under supervision",
-                "positive", "negative",
-                "bed care", "confirmed",
+                "positive",
+                "negative",
+                "bed care",
+                "confirmed",
                 "death",
             ],
             "texts": [],
             "filenames": [],
             "algorithm": "boyer_moore",
         }
-        sent["texts"].append(self.app.get('/sample/washington1.txt').data.decode("utf-8"))
-        sent["texts"].append(self.app.get('/sample/cnbc1.txt').data.decode("utf-8"))
-        rv = self.app.post(
-            '/extractor',
-            data=sent
+        sent["texts"].append(
+            self.app.get("/sample/washington1.txt").data.decode("utf-8")
         )
+        sent["texts"].append(self.app.get("/sample/cnbc1.txt").data.decode("utf-8"))
+        rv = self.app.post("/extractor", data=sent)
         # check result from server with expected data
         self.assertEqual(rv.status_code, 200)
 
     def test_extractor_page_works(self):
-        rv = self.app.get('/extractor')
+        rv = self.app.get("/extractor")
         self.assertTrue(rv.data)
         self.assertEqual(rv.status_code, 200)
 
@@ -66,11 +68,11 @@ class TestApp(unittest.TestCase):
     #     self.assertEqual(rv.status_code, 301)
 
     def test_404_page(self):
-        rv = self.app.get('/i-am-not-found/')
+        rv = self.app.get("/i-am-not-found/")
         self.assertEqual(rv.status_code, 404)
 
     def test_static_text_file_request(self):
-        rv = self.app.get('/sample/kompas1.txt')
+        rv = self.app.get("/sample/kompas1.txt")
         self.assertTrue(rv.data)
         self.assertEqual(rv.status_code, 200)
         rv.close()

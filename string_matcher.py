@@ -21,7 +21,7 @@ class BoyerMoore(MatchStrategy):
     def match(self, txt, pat):
         last = self.__buildLast(pat)
         n, m = len(txt), len(pat)
-        if(m > n):
+        if m > n:
             return -1  # no match if pat > txt
 
         i = j = m - 1
@@ -37,7 +37,7 @@ class BoyerMoore(MatchStrategy):
                 i += m - min(j, lo + 1)
                 j = m - 1
 
-            if(i > n - 1):
+            if i > n - 1:
                 break
         return -1  # no match
 
@@ -49,7 +49,7 @@ class KMP(MatchStrategy):
         i, j = 1, 0
 
         while i < m:
-            if (string[j] == string[i]):  # j+ 1 chars match
+            if string[j] == string[i]:  # j+ 1 chars match
                 fail[i] = j + 1
                 j += 1
                 i += 1
