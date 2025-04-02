@@ -2,9 +2,12 @@ from typing import List
 from string_matcher import StringMatcher
 import re
 import string
-from nltk.tokenize import sent_tokenize
+from nltk.tokenize import PunktTokenizer
 
-DEBUG = False
+
+def sent_tokenize(text: str) -> List[str]:
+    sent_detector = PunktTokenizer()
+    return sent_detector.tokenize(text.strip())
 
 
 class Match:
