@@ -2,12 +2,17 @@ from typing import List
 from string_matcher import StringMatcher
 import re
 import string
-from nltk.tokenize import PunktTokenizer
+import pickle
+
+
+with open("libs/english.pickle", "rb") as f:
+    SENT_DETECTOR = pickle.load(f)
 
 
 def sent_tokenize(text: str) -> List[str]:
-    sent_detector = PunktTokenizer()
-    return sent_detector.tokenize(text.strip())
+    if not SENT_DETECTOR:
+        raise ValueError("Sentence detector not initialized.")
+    return SENT_DETECTOR.tokenize(text.strip())
 
 
 class Match:
